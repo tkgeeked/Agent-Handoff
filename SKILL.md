@@ -1,14 +1,14 @@
 ---
 name: agent-handoff
 slug: agent-handoff
-displayName: AgentHandoff | AI Agent 项目接管与进度无缝交班协议 (支持 Claude Code / Cursor / Windsurf / Antigravity)
-version: 1.0.1
+displayName: AgentHandoff | AI Agent 项目接管与进度无缝交接协议
+version: 1.0.2
 author: tkgeeked
 homepage: https://github.com/tkgeeked/agent-handoff
-description: 专为 AI Agent（包括 Claude Code、Cursor、Windsurf、Antigravity、Hermes 等）设计的项目治理与接管规范。通过自动维护的“活体看板”和“开发日志”，实现不同 AI 助手或多次会话之间的零信息差无缝接班开发，避免重复解释进度与规则。
+description: 专为 AI Agent（包括 Claude Code、Cursor、Windsurf、Antigravity、Hermes 等）设计的项目治理与接管规范。通过自动维护的“活体看板”和“开发日志”，实现不同 AI 助手或多次会话之间的零信息差无缝交接开发，避免重复解释进度与规则。
 ---
 
-# AI Agent 项目接管与进度交班规范 (AgentHandoff)
+# AI Agent 项目接管与进度交接规范 (AgentHandoff)
 
 本 Skill 为 AI 助手接管、维护或交接工作区定义了一套标准的工作流和行为规范。**其核心目标是消除在同一个项目上切换不同 AI 助手（如 Claude Code, Codex, Cursor, Windsurf, Hermes, Antigravity）时的信息差与接管摩擦。**
 
