@@ -1,5 +1,5 @@
 ---
-name: ai-agent-governance
+name: agent-handoff
 description: Enforces seamless context handoffs and project governance for multiple AI agents (including Claude Code, Codex, Hermes Agent, and Antigravity). Instructs the AI to maintain a self-documenting project dashboard and reverse-chronological development logs to eliminate onboarding friction between different AI sessions.
 ---
 
@@ -46,7 +46,7 @@ Whenever you take over a workspace or begin a session, you **MUST** execute thes
 You **MUST** keep the project dashboard updated:
 -   **Directory Tree**: Update the directory tree layout in the documentation whenever files/folders are restructured.
 -   **Task Tracker**: Update the status of tasks (`[ ]` to `[/]` or `[x]`) as you work.
--   **Development Log**: Append a summary entry at the end of your session (see Session Handover below).
+-   **Development Log**: Append a summary entry at the end of your session (see Session Handoff Protocol below).
 
 ---
 
@@ -60,7 +60,7 @@ Maintain high structural hygiene across all projects:
 
 ---
 
-## 5. Session Handover Protocol (Preparing for the Next Agent)
+## 5. Session Handoff Protocol (Preparing for the Next Agent)
 
 At the end of your current session, you **MUST** ensure the handoff is perfect for the next agent:
 1.  Verify the codebase compiles and all tests pass.

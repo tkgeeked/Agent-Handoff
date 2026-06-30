@@ -1,4 +1,4 @@
-# 🤖 AI Agent Governance & Handoff System
+# 🤖 AgentHandoff
 
 [简体中文](#简体中文) | English
 
@@ -60,7 +60,7 @@ Updates Task list      (README.md / CLAUDE.md / AI.md)    Knows context instantl
 
 For Antigravity/Codex:
 ```bash
-git clone https://github.com/tkgeeked/ai-agent-governance.git ~/.gemini/config/skills/ai-agent-governance
+git clone https://github.com/tkgeeked/agent-handoff.git ~/.gemini/config/skills/agent-handoff
 ```
 
 ### 2. Local Project Integration
@@ -68,7 +68,7 @@ git clone https://github.com/tkgeeked/ai-agent-governance.git ~/.gemini/config/s
 Clone the rules into your project's agent folder:
 ```bash
 mkdir -p .agents/skills
-git clone https://github.com/tkgeeked/ai-agent-governance.git .agents/skills/ai-agent-governance
+git clone https://github.com/tkgeeked/agent-handoff.git .agents/skills/agent-handoff
 ```
 
 #### For Claude Code
@@ -93,7 +93,7 @@ MIT License. Feel free to customize it for your specific tech stacks (Node.js, P
 
 ## 简体中文
 
-# AI Agent 项目接管与自我治理规范
+# AgentHandoff - AI 项目接管与自我治理规范
 
 这是一个轻量级、面向开发者的项目治理框架，旨在**消除在同一个项目上切换不同 AI 助手时（如 Claude Code, Codex, Hermes Agent, Antigravity, Cursor, Windsurf）的信息差与接管摩擦**。
 
@@ -153,7 +153,7 @@ MIT License. Feel free to customize it for your specific tech stacks (Node.js, P
 
 针对 Antigravity/Codex：
 ```bash
-git clone https://github.com/tkgeeked/ai-agent-governance.git ~/.gemini/config/skills/ai-agent-governance
+git clone https://github.com/tkgeeked/agent-handoff.git ~/.gemini/config/skills/agent-handoff
 ```
 
 ### 2. 单个项目集成
@@ -161,7 +161,7 @@ git clone https://github.com/tkgeeked/ai-agent-governance.git ~/.gemini/config/s
 将规范放入项目的 agent 目录：
 ```bash
 mkdir -p .agents/skills
-git clone https://github.com/tkgeeked/ai-agent-governance.git .agents/skills/ai-agent-governance
+git clone https://github.com/tkgeeked/agent-handoff.git .agents/skills/agent-handoff
 ```
 
 #### 对于 Claude Code
