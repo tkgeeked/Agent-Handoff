@@ -1,5 +1,10 @@
 ---
 name: agent-handoff
+slug: agent-handoff
+displayName: AgentHandoff
+version: 1.0.0
+author: tkgeeked
+homepage: https://github.com/tkgeeked/agent-handoff
 description: Enforces seamless context handoffs and project governance for multiple AI agents (including Claude Code, Codex, Hermes Agent, and Antigravity). Instructs the AI to maintain a self-documenting project dashboard and reverse-chronological development logs to eliminate onboarding friction between different AI sessions.
 ---
 

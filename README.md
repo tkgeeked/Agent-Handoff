@@ -49,7 +49,7 @@ Updates Task list      (README.md / CLAUDE.md / AI.md)    Knows context instantl
 
 *   `SKILL.md`: Skill definition metadata for Antigravity & Codex environments.
 *   `resources/README.template.md`: Boilerplate markdown dashboard for new repositories.
-*   `resources/CLAUDE.md.template`: Pre-configured environment rules and build commands for Claude Code.
+*   `resources/CLAUDE.template.md`: Pre-configured environment rules and build commands for Claude Code.
 *   `references/best_practices.md`: Clear guidelines on modularity, dry runs, error logging, and scratch file hygiene.
 
 ---
@@ -74,7 +74,7 @@ git clone https://github.com/tkgeeked/agent-handoff.git .agents/skills/agent-han
 #### For Claude Code
 Copy the Claude-specific configuration to your root:
 ```bash
-cp resources/CLAUDE.md.template /path/to/your/project/CLAUDE.md
+cp resources/CLAUDE.template.md /path/to/your/project/CLAUDE.md
 ```
 
 #### For Other Agents (Hermes, Cursor, Windsurf)
@@ -142,7 +142,7 @@ MIT License. Feel free to customize it for your specific tech stacks (Node.js, P
 
 *   `SKILL.md`：适配 Antigravity / Codex 自定义 Skill 系统的配置文件。
 *   `resources/README.template.md`：用于新项目初始化的通用 README 看板模板。
-*   `resources/CLAUDE.md.template`：适用于 Claude Code 的构建、测试与代码规范配置模板。
+*   `resources/CLAUDE.template.md`：适用于 Claude Code 的构建、测试与代码规范配置模板。
 *   `references/best_practices.md`：面向 AI 的模块化编程、异常处理与工作区卫生规范手册。
 
 ---
@@ -167,7 +167,7 @@ git clone https://github.com/tkgeeked/agent-handoff.git .agents/skills/agent-han
 #### 对于 Claude Code
 将 Claude 专属配置文件复制到项目根目录下：
 ```bash
-cp resources/CLAUDE.md.template /path/to/your/project/CLAUDE.md
+cp resources/CLAUDE.template.md /path/to/your/project/CLAUDE.md
 ```
 
 #### 对于其他 Agent (Hermes, Cursor, Windsurf)
