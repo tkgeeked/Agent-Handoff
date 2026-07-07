@@ -5,12 +5,12 @@ displayName: AgentHandoff | AI Agent 项目接管与进度无缝交接协议
 version: 1.0.2
 author: tkgeeked
 homepage: https://github.com/tkgeeked/agent-handoff
-description: 专为 AI Agent（包括 Claude Code、Cursor、Windsurf、Antigravity、Hermes 等）设计的项目治理与接管规范。通过自动维护的“活体看板”和“开发日志”，实现不同 AI 助手或多次会话之间的零信息差无缝交接开发，避免重复解释进度与规则。
+description: 专为 AI Agent（包括 Claude Code、Codex、Antigravity、Trae 等）设计的项目治理与接管规范。通过自动维护的“活体看板”和“开发日志”，实现不同 AI 助手或多次会话之间的零信息差无缝交接开发，避免重复解释进度与规则。
 ---
 
 # AI Agent 项目接管与进度交接规范 (AgentHandoff)
 
-本 Skill 为 AI 助手接管、维护或交接工作区定义了一套标准的工作流和行为规范。**其核心目标是消除在同一个项目上切换不同 AI 助手（如 Claude Code, Codex, Cursor, Windsurf, Hermes, Antigravity）时的信息差与接管摩擦。**
+本 Skill 为 AI 助手接管、维护或交接工作区定义了一套标准的工作流和行为规范。**其核心目标是消除在同一个项目上切换不同 AI 助手（如 Claude Code, Codex, Antigravity, Trae）时的信息差与接管摩擦。**
 
 它能确保你（当前处于活跃状态的 AI Agent）能够始终维护好项目中的“活体看板”与“开发日志”，以便下一个接手的 AI Agent 能够瞬间接管工作，实现零信息差开发。
 
@@ -18,12 +18,12 @@ description: 专为 AI Agent（包括 Claude Code、Cursor、Windsurf、Antigrav
 
 ## 1. 多智能体（Multi-Agent）适配层
 
-不同的 AI 助手读取配置和规则的文件路径不同，请根据当前运行的 Agent 环境进行适配：
+不同的 AI 助手读取配置和规则的文件路径不同，请根据当前运行 the Agent 环境进行适配：
 
 - **Claude Code**：读取项目根目录下的 `CLAUDE.md` 以获取构建/测试命令和代码风格约束。
 - **Antigravity / Codex**：从 `.agents/` 目录或全局配置中读取 `SKILL.md`。
-- **Cursor / Windsurf**：读取根目录下的 `.cursorrules` 或 `.windsurfrules` 作为系统提示词（System Prompt）。
-- **Hermes / 通用 LLM**：通过优先扫描项目 `README.md`（特别是 `## 🤖 AI Agent Entrypoint` 锚点段落）或独立的 `AI.md` 文件来建立上下文。
+- **Trae**：读取根目录下的 `.cursorrules` 或 `.traerules` 作为系统提示词（System Prompt）。
+- **通用 LLM**：通过优先扫描项目 `README.md`（特别是 `## 🤖 AI Agent Entrypoint` 锚点段落）或独立的 `AI.md` 文件来建立上下文。
 
 ---
 
