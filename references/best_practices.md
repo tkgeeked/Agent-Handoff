@@ -1,43 +1,56 @@
-# AI Engineering & Collaboration Best Practices
+# 项目特定约束与规范（模板）
 
-This reference document outlines standard engineering practices and collaboration protocols for AI agents working in this workspace.
+本文件用于记录**本项目独有的**规则与约束。通用编程常识（如 DRY、单一职责等）无需重复——AI 已经知道。
 
----
-
-## 1. Code Architecture & Design
-
-### Modularity & Cohesion
-- **Single Responsibility**: Keep functions, classes, and modules small and focused on a single responsibility. If a function exceeds 50 lines, evaluate if it should be split.
-- **Pure Functions**: Write pure, deterministic functions whenever possible to simplify testing. Keep side-effects isolated.
-- **DRY (Don't Repeat Yourself)**: Refactor shared logic into utility files rather than copy-pasting code blocks.
-
-### Defensive Programming & Error Handling
-- **Explicit Checks**: Validate inputs and handle boundary conditions (null values, empty arrays, out-of-bound indexes).
-- **Graceful Failures**: Avoid catching errors without logging them. Ensure the program fails loudly in development but gracefully in production.
+只写"如果不特别说明，AI 可能会做错"的内容。
 
 ---
 
-## 2. Workspace & Git Hygiene
+## 如何使用本文件
 
-### Managing Output & Temp Files
-- **Agent Scratchpad**: Utilize the system's scratch directory for any quick, trial-and-error scripts.
-- **Cleanup**: If you create a temporary script or local file outside the scratch folder, delete it or move it to a `.scratch/` directory before ending your turn.
-- **Ignore Rules**: Ensure that system-specific, agent-specific, or local-only logs are added to the `.gitignore` or similar ignore lists.
-
-### File and Code Naming
-- Use clear, semantic, and standardized casing:
-  - `camelCase` for variables, functions, and properties.
-  - `PascalCase` for classes, component names, and types.
-  - `snake_case` or `kebab-case` for file/directory names, depending on the language ecosystem's standard (e.g., kebab-case for React components/web projects, snake_case for Python).
+将下方模板复制到你的项目看板中（或直接修改本文件），填入你项目的实际约束。删除不适用的条目。
 
 ---
 
-## 3. Communication & Handoff Protocols
+## 模板
 
-### Collaborative Decision Making
-- When a requirement is ambiguous or requires choosing between multiple valid designs, do not make assumptions. Stop and present the options (with pros and cons) to the user.
-- If the agent-facing UI supports any interactive query or onboarding command, recommend it to the user to align on complex design decisions.
+### 构建与环境约束
 
-### Keeping Logs Accurate
-- **Commit Messages**: If the agent commits code, follow the conventional commits standard (`feat: ...`, `fix: ...`, `docs: ...`, `refactor: ...`).
-- **Never Fabricate History**: Only document actions actually taken in the Development Log. If a step failed, record the failure and how it was resolved.
+- **运行时版本要求**：[e.g., Node >= 20 / Python >= 3.11 / Rust stable]
+- **包管理器**：[e.g., 只用 pnpm，不要用 npm / 只用 uv，不要用 pip]
+- **环境变量**：[e.g., 需要 .env.local 文件，包含 API_KEY]
+- **特殊构建步骤**：[e.g., 必须先运行 codegen 再 build]
+
+### 代码约束（项目特有）
+
+- [e.g., 所有 API 响应必须经过 `src/middleware/validate.ts` 校验]
+- [e.g., 数据库操作只能用 `src/db/queries/` 下的预定义函数，禁止裸 SQL]
+- [e.g., 组件文件不超过 150 行，超过必须拆分]
+- [e.g., 所有公开函数必须有 JSDoc / docstring]
+
+### 禁止事项
+
+- [e.g., 不要升级 `legacy-auth` 模块，它依赖旧版 API]
+- [e.g., 不要删除 `src/compat/` 下的任何文件]
+- [e.g., 不要引入新的状态管理库，统一用 zustand]
+
+### 测试约束
+
+- [e.g., 测试文件命名：`*.test.ts` 放在 `tests/` 目录]
+- [e.g., 集成测试需要本地 Docker 运行]
+- [e.g., 覆盖率要求：核心模块 > 80%]
+
+### 部署与发布
+
+- [e.g., 合并到 main 分支会自动触发 CI/CD]
+- [e.g., 版本号遵循 semver，手动在 package.json 中更新]
+- [e.g., 发布前必须更新 CHANGELOG.md]
+
+---
+
+## 填写原则
+
+1. **只写例外**：如果某条规则是"所有项目都应该这样"的常识，不用写。
+2. **写具体路径**：不要说"相关文件"，要说 `src/utils/auth.ts`。
+3. **写原因**：如果某条规则看起来不合理，附上原因，防止 AI"好心"帮你改掉。
+4. **定期更新**：项目演进后，过时的约束比没有约束更危险。

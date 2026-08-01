@@ -1,42 +1,65 @@
 # CLAUDE.md
 
-Guidelines and commands for Claude Code and other AI development agents working on this project.
+Guidelines and commands for AI development agents working on this project.
 
 ---
 
 ## 🛠 Commands
 
-Ensure code complies with commands before completing tasks:
+Ensure code complies with these commands before completing tasks:
 
-- **Build**: `[e.g., npm run build]`
-- **Run**: `[e.g., npm run dev]`
-- **Lint/Format**: `[e.g., npm run lint]`
-- **Test**: `[e.g., npm run test]`
-- **Test single file**: `[e.g., npm run test -- src/utils/auth.test.js]`
+- **Build**: `[e.g., npm run build / cargo build / go build ./...]`
+- **Run**: `[e.g., npm run dev / python main.py]`
+- **Lint/Format**: `[e.g., npm run lint / ruff check .]`
+- **Test**: `[e.g., npm run test / pytest / go test ./...]`
+- **Test single file**: `[e.g., npm run test -- path/to/test / pytest path/to/test.py]`
 
 ---
 
 ## 📐 Coding Style & Guidelines
 
-- **Imports**: Use ES Module imports (`import ... from '...'`). Prefer named imports where applicable.
-- **Async/Await**: Always use `async/await` rather than raw promises for asynchronous operations.
-- **Error Handling**: Wrap external API and I/O operations in `try/catch` blocks. Do not swallow errors.
-- **Types**: Maintain TypeScript configurations. Keep components and functions properly typed.
-- **Modularity**: Prioritize functional programming. Keep components and hooks under 100 lines of code.
-- **Hygiene**: Do not leave debugging tools (`console.log`, `debugger`) in production commits.
-- **Tests**: Write unit tests for all new helper functions and utility files.
+*(Replace with your project's actual conventions. Examples below are placeholders.)*
+
+- **Imports**: [e.g., Use ES Module imports / Use absolute imports]
+- **Async**: [e.g., Always use async/await / Use tokio for async Rust]
+- **Error Handling**: [e.g., Wrap I/O in try/catch / Use Result types]
+- **Types**: [e.g., Maintain TypeScript strict mode / Use type hints in Python]
+- **Modularity**: [e.g., Keep functions under 50 lines / Single responsibility]
+- **Hygiene**: No debugging leftovers (`console.log`, `print`, `debugger`) in commits.
+- **Tests**: Write tests for all new utility functions and modules.
+
+---
+
+## 👤 User Preferences
+
+*(Defined by user. Agents read but do NOT modify.)*
+
+- **Language**: [e.g., 中文 / English]
+- **Permissions**: [e.g., "Ask before deleting" / "Auto-decide OK"]
+- **Style**: [e.g., "Conservative" / "Refactoring allowed"]
+
+---
+
+## 🏛 Key Decisions (Permanent)
+
+| Date | Decision | Why | Alternatives |
+|------|----------|-----|--------------|
+| YYYY-MM-DD | [Choice] | [Reason] | [Rejected options] |
 
 ---
 
 ## 📖 Session Handoff Log
 
-When finishing your current run, please append your session summary here.
+*(Keep max 10 entries. Older → `docs/dev-log-archive.md`. Newest first.)*
 
-### YYYY-MM-DD (Session #1 - Task Title)
+When finishing your session, append here:
+
+### YYYY-MM-DD (Session Summary)
 - **Agent**: [e.g., Claude Code]
-- **Actions**:
-  - Summarize what files were created or modified.
-- **Decisions**:
-  - Key architectural decisions made during the session.
-- **Next Steps**:
-  - Specific instructions for the next agent session.
+- **Goal**: [What you aimed to do]
+- **Actions**: [Files created/modified/deleted]
+- **Decisions**: [Key architectural choices]
+- **Status**: Build ✅ / Tests ✅
+- **Next Steps**: [Specific instructions for next agent]
+
+If you failed to complete something, use the failure template in `references/handoff_log_format.md`.

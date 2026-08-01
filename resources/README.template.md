@@ -6,21 +6,23 @@ Brief 2-3 sentence project overview describing the goal, target audience, and ke
 
 ## 🤖 AI Agent Entrypoint
 
-If you are an AI assistant (e.g., Claude Code, Codex, Hermes Agent, Antigravity) taking over this project, please follow these guidelines:
-1. **Commands**: Refer to the **Environment & Command Quick Start** section below.
-2. **Guidelines**: Ensure all modifications follow the directory structure and coding conventions.
-3. **Log & Handoff**: Update the **Task Tracker** and append your session notes to the **AI Development Log** before finishing.
+If you are an AI assistant taking over this project, follow these steps **in order**:
+1. **Verify**: Run the build & test commands below. Confirm actual state matches this document.
+2. **Read tasks**: Check the Active Task Tracker for current priorities.
+3. **Read log**: Check the latest 3-5 entries in the AI Development Log.
+4. **Declare scope**: State what you plan to accomplish this session before coding.
+5. **Before leaving**: Update tasks, append a log entry, commit all changes.
+
+Detailed log formats: see `references/handoff_log_format.md` in the agent-handoff skill.
 
 ---
 
 ## 🛠 Environment & Command Quick Start
 
-Below are the commands used by developers and AI agents to compile, run, verify, and test the project:
-
-- **Build**: `[e.g., npm run build]`
-- **Run Dev**: `[e.g., npm run dev]`
-- **Lint/Format**: `[e.g., npm run lint]`
-- **Test**: `[e.g., npm run test]`
+- **Build**: `[e.g., npm run build / cargo build / go build ./...]`
+- **Run Dev**: `[e.g., npm run dev / python main.py / go run .]`
+- **Lint/Format**: `[e.g., npm run lint / ruff check . / golangci-lint run]`
+- **Test**: `[e.g., npm run test / pytest / go test ./...]`
 
 ---
 
@@ -28,61 +30,66 @@ Below are the commands used by developers and AI agents to compile, run, verify,
 
 ```text
 ├── src/                  # Production source code
-│   ├── components/       # Reusable UI components
-│   └── utils/            # Utility and helper functions
-├── tests/                # Unit, integration, and E2E tests
-├── docs/                 # Extended documentation and guides
-├── config/               # Custom configuration files
-├── .scratch/             # Debugging scripts and trial outputs (git-ignored)
-├── README.md             # Active project dashboard (this file)
-└── package.json          # Project dependencies and scripts
+├── tests/                # Tests
+├── docs/                 # Documentation & log archive
+│   └── dev-log-archive.md  # Archived dev logs (auto-managed)
+├── .scratch/             # Temp/debug files (git-ignored)
+└── README.md             # This dashboard
 ```
 
-*Rules for file placement:*
-- *Production components go in `src/components/`.*
-- *All utility files must have matching `.test.js` files in `tests/`.*
-- *Do not place loose files in the root unless they are project configuration.*
+*(Update this tree whenever files are added/removed/restructured.)*
+
+---
+
+## 👤 User Preferences
+
+*(This section is defined by the user. Agents read but do NOT modify it.)*
+
+- **Language**: [e.g., 中文 / English]
+- **Permissions**: [e.g., "Ask before deleting files" / "Auto-decide is fine"]
+- **Style**: [e.g., "Conservative changes only" / "Refactoring allowed"]
+- **Other rules**: [Any user-specific constraints]
 
 ---
 
 ## 📋 Active Task Tracker
 
-### Current Goal: [Describe active high-level goal]
-- [/] Active Task (Currently in progress)
-- [ ] Next Task (Pending)
-- [ ] Future Task
+### Current Goal: [One-line description]
 
-### Task History & Backlog:
-- [x] Completed task 1 (Completed: YYYY-MM-DD)
-- [x] Completed task 2 (Completed: YYYY-MM-DD)
-- [ ] Backlog task A
+| Task | Priority | Status | Depends On | Notes |
+|------|----------|--------|------------|-------|
+| [Task description] | P0/P1/P2 | [ ] | — | |
+| [Task description] | P1 | [/] | Task above | In progress by [Agent name] |
+| [Task description] | P2 | [ ] | — | Backlog |
+
+Priority: **P0** = blocking, **P1** = important, **P2** = normal.
+
+---
+
+## 🏛 Key Decisions (Permanent — Never Archive)
+
+| Date | Decision | Why | Alternatives Considered |
+|------|----------|-----|------------------------|
+| YYYY-MM-DD | [What was chosen] | [Reasoning] | [What else was considered and rejected] |
 
 ---
 
 ## 📖 AI Development Log
 
-This is a reverse-chronological log recording changes, key architectural decisions, and current project health.
+*(Keep max 10 entries here. Older entries → `docs/dev-log-archive.md`. Newest first.)*
 
-### YYYY-MM-DD (Session #2 - Task Description)
-- **Agent**: [e.g., Claude Code, Antigravity, etc.]
-- **Actions**:
-  - Implemented the user authentication service in `src/utils/auth.js`.
-  - Added unit tests in `tests/auth.test.js`.
-- **Decisions**:
-  - Used JWT tokens stored in localStorage for session state management.
-- **Current State**:
-  - Build status: Passing.
-  - Test coverage: 94%.
-- **Next Steps**:
-  - Design the Login UI component in `src/components/Login.jsx`.
+### YYYY-MM-DD (Session Summary)
+- **Agent**: [e.g., Claude Code, Cursor, Antigravity]
+- **Goal**: [What this session aimed to do]
+- **Actions**: [Files changed, features implemented]
+- **Decisions**: [Key technical choices made]
+- **Status**: Build ✅ / Tests ✅
+- **Next Steps**: [Specific tasks for the next agent]
 
-### YYYY-MM-DD (Session #1 - Initial Project Setup)
-- **Actions**:
-  - Initialized repository structure.
-  - Setup ESLint and Prettier.
-- **Decisions**:
-  - Standardized on ES Modules.
-- **Current State**:
-  - Fresh setup, ready for development.
-- **Next Steps**:
-  - Write standard authentication logic.
+### YYYY-MM-DD (Session Summary)
+- **Agent**: [...]
+- **Goal**: [...]
+- **Actions**: [...]
+- **Decisions**: [...]
+- **Status**: Build ✅ / Tests ❌ (see notes)
+- **Next Steps**: [...]
