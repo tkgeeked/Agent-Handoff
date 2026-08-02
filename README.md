@@ -70,14 +70,33 @@ Updates Task list      (README.md / CLAUDE.md / AI.md)    (runs build/test first
 
 ```text
 agent-handoff/
+├── .github/workflows/ci.yml       # GitHub Actions CI for Markdown & Handoff validation
 ├── SKILL.md                        # Core protocol (concise, loaded every session)
 ├── README.md                       # This file (human-facing, full explanation)
+├── scripts/
+│   └── validate-handoff.mjs        # Mechanical validation & log auto-archiver
 ├── references/
 │   ├── handoff_log_format.md       # Log templates: normal, failure, issue-found
 │   └── best_practices.md           # Project-specific constraints template
 └── resources/
     ├── README.template.md          # Dashboard template for new projects
-    └── CLAUDE.template.md          # Claude Code config template
+    ├── CLAUDE.template.md          # Claude Code config template
+    ├── cursorrules.template        # Cursor IDE system prompt template
+    └── windsurfrules.template      # Windsurf IDE system prompt template
+```
+
+---
+
+## Tooling & Verification
+
+Verify active dashboard compliance or auto-archive logs via Node.js:
+
+```bash
+# Validate dashboard structure
+node scripts/validate-handoff.mjs --check
+
+# Auto-archive entries beyond 10 into docs/dev-log-archive.md
+node scripts/validate-handoff.mjs --archive
 ```
 
 ---

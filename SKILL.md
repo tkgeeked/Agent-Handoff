@@ -2,7 +2,7 @@
 name: agent-handoff
 slug: agent-handoff
 displayName: AgentHandoff | AI Agent 项目接管与进度无缝交接协议
-version: 2.0.0
+version: 2.1.0
 author: tkgeeked
 homepage: https://github.com/tkgeeked/agent-handoff
 description: 专为 AI Agent（包括 Claude Code、Codex、Antigravity、Trae 等）设计的项目治理与接管规范。通过自动维护的"活体看板"和"开发日志"，实现不同 AI 助手或多次会话之间的零信息差无缝交接开发。
@@ -93,3 +93,16 @@ description: 专为 AI Agent（包括 Claude Code、Codex、Antigravity、Trae �
 - 生产代码放标准源码目录（`src/`、`lib/`、`app/`）。
 - 临时/调试文件放 `.scratch/`（已 gitignore），会话结束前清理。
 - 根目录只放必要配置文件，保持干净。
+
+## 10. 机械化校验与辅助工具
+
+项目提供了轻量级校验与自动化归档工具：
+
+```bash
+# 校验当前看板格式与语法规范
+node scripts/validate-handoff.mjs --check
+
+# 当开发日志超过 10 条时，自动进行归档处理
+node scripts/validate-handoff.mjs --archive
+```
+
