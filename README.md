@@ -81,8 +81,8 @@ agent-handoff/
 └── resources/
     ├── README.template.md          # Dashboard template for new projects
     ├── CLAUDE.template.md          # Claude Code config template
-    ├── cursorrules.template        # Cursor IDE system prompt template
-    └── windsurfrules.template      # Windsurf IDE system prompt template
+    ├── cursorrules.md              # Cursor IDE system prompt template
+    └── windsurfrules.md            # Windsurf IDE system prompt template
 ```
 
 ---
