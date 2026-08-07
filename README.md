@@ -36,10 +36,13 @@ Updates Task list      (README.md / CLAUDE.md / AI.md)    (runs build/test first
 
 ---
 
-## What's New in v2.0
+## What's New in v2.1
 
 | Feature | Description |
 |---------|-------------|
+| `--file` CLI Option | Pass specific file paths to `scripts/validate-handoff.mjs --file <path>` |
+| Task Board Syntax Linting | Automatic validation of task checkboxes (`[ ]`/`[/]`/`[x]`) and priorities (`P0`/`P1`/`P2`) |
+| Auto-trigger Encodings | Enriched frontmatter description for seamless LLM skill auto-invocation |
 | Verification step | Agents must confirm actual project state, not just trust docs |
 | Log archival | Max 10 entries in dashboard; older ones archived (never deleted) |
 | Failure templates | Standardized format for recording failures and blocked work |
@@ -49,7 +52,6 @@ Updates Task list      (README.md / CLAUDE.md / AI.md)    (runs build/test first
 | Git integration | Commit conventions, WIP handling, mandatory commit before session end |
 | Parallel awareness | Guidelines for avoiding conflicts when multiple agents work simultaneously |
 | Platform fallback | Principle-based adaptation instead of hardcoded agent list |
-| De-JS templates | Language-agnostic placeholders (Node/Python/Go/Rust examples) |
 
 ---
 
@@ -92,8 +94,11 @@ agent-handoff/
 Verify active dashboard compliance or auto-archive logs via Node.js:
 
 ```bash
-# Validate dashboard structure
+# Validate dashboard structure in current working directory
 node scripts/validate-handoff.mjs --check
+
+# Validate a specific file path or template
+node scripts/validate-handoff.mjs --file path/to/CLAUDE.md
 
 # Auto-archive entries beyond 10 into docs/dev-log-archive.md
 node scripts/validate-handoff.mjs --archive
@@ -164,10 +169,13 @@ MIT License.
 
 ---
 
-## v2.0 新增内容
+## v2.1 新增内容
 
 | 功能 | 说明 |
 |------|------|
+| `--file` 路径指定 | 支持 `scripts/validate-handoff.mjs --file <path>` 显式指定待校验文件 |
+| 看板语法校验 | 自动校验任务复选框（`[ ]`/`[/]`/`[x]`）与优先级（`P0`/`P1`/`P2`）格式 |
+| 自动触发增强 | 强化元数据描述，提升各类 AI Agent 自动匹配与调用的精准度 |
 | 验证步骤 | 接手时先跑 build/test，不盲信文档 |
 | 日志归档 | 看板最多 10 条，旧的归档（不删除） |
 | 失败模板 | 没搞定怎么写、发现问题怎么写 |
@@ -177,7 +185,6 @@ MIT License.
 | Git 整合 | 提交规范、WIP 处理、必须 commit |
 | 并行协作 | 多 Agent 同时工作时的避冲突指引 |
 | 平台回退 | 原则性适配，不再硬编码 Agent 列表 |
-| 去 JS 化模板 | 语言无关占位符 |
 
 ---
 
