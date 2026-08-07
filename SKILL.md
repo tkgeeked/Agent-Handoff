@@ -2,10 +2,10 @@
 name: agent-handoff
 slug: agent-handoff
 displayName: AgentHandoff | AI Agent 项目接管与进度无缝交接协议
-version: 2.1.0
+version: 2.1.1
 author: tkgeeked
 homepage: https://github.com/tkgeeked/agent-handoff
-description: 专为 AI Agent（包括 Claude Code、Codex、Antigravity、Trae 等）设计的项目治理与接管规范。通过自动维护的"活体看板"和"开发日志"，实现不同 AI 助手或多次会话之间的零信息差无缝交接开发。
+description: 专为 AI Agent（包括 Claude Code、Codex、Antigravity、Trae、Cursor、Windsurf 等）设计的项目治理与无缝交接协议。触发场景：在开始或结束 Agent 会话、接管新项目、进行多 Agent 协作交接、维护开发日志与任务看板，或清理归档历史日志时触发。(Use when starting or completing an agent coding session, handing off work between agents, inspecting project task boards, or creating session logs.)
 ---
 
 # AgentHandoff 交接协议

@@ -7,24 +7,49 @@ import path from 'node:path';
  * Usage:
  *   node scripts/validate-handoff.mjs --check
  *   node scripts/validate-handoff.mjs --archive
+ *   node scripts/validate-handoff.mjs --file <path-to-file>
  */
 
 const cwd = process.cwd();
-const isArchiveMode = process.argv.includes('--archive');
-const isCheckMode = process.argv.includes('--check') || !isArchiveMode;
+const args = process.argv.slice(2);
+
+// Check CLI arguments for --file or -f
+let customFilePath = null;
+const fileArgIdx = args.findIndex(arg => arg === '--file' || arg === '-f');
+if (fileArgIdx !== -1 && args[fileArgIdx + 1]) {
+  customFilePath = args[fileArgIdx + 1];
+} else {
+  const inlineFileArg = args.find(arg => arg.startsWith('--file='));
+  if (inlineFileArg) {
+    customFilePath = inlineFileArg.split('=')[1];
+  }
+}
+
+const isArchiveMode = args.includes('--archive');
+const isCheckMode = args.includes('--check') || (!isArchiveMode && !customFilePath) || customFilePath !== null;
 
 console.log('🔍 AgentHandoff Validation & Maintenance Tool');
 console.log('--------------------------------------------------');
 
 // Find handoff document
-const candidateFiles = ['CLAUDE.md', 'AI.md', 'README.md', 'SKILL.md'];
 let targetFile = null;
 
-for (const name of candidateFiles) {
-  const fullPath = path.join(cwd, name);
-  if (fs.existsSync(fullPath)) {
-    targetFile = fullPath;
-    break;
+if (customFilePath) {
+  const resolved = path.resolve(cwd, customFilePath);
+  if (fs.existsSync(resolved)) {
+    targetFile = resolved;
+  } else {
+    console.error(`❌ Specified target file not found: ${customFilePath}`);
+    process.exit(1);
+  }
+} else {
+  const candidateFiles = ['CLAUDE.md', 'AI.md', 'README.md', 'SKILL.md'];
+  for (const name of candidateFiles) {
+    const fullPath = path.join(cwd, name);
+    if (fs.existsSync(fullPath)) {
+      targetFile = fullPath;
+      break;
+    }
   }
 }
 
@@ -44,7 +69,39 @@ if (!content.includes('SKILL') && !content.includes('Handoff') && !content.inclu
   warnings.push('Document does not appear to contain AgentHandoff protocol headers.');
 }
 
-// 2. Count Dev Log Entries
+// 2. Validate Task Board Markdown Table & Task States
+const taskLines = content.split('\n').filter(line => line.includes('|'));
+if (taskLines.length > 0) {
+  let taskCount = 0;
+  for (const line of taskLines) {
+    // Skip table header divider lines (e.g. |---|---|)
+    if (/^\s*\|(?:\s*:?-+:?\s*\|)+\s*$/.test(line)) continue;
+
+    // Check for task status checkbox syntax in table cells
+    const statusMatch = line.match(/\[([ x/!?\-])\]/i);
+    if (statusMatch) {
+      taskCount++;
+      const statusSymbol = statusMatch[1].toLowerCase();
+      if (![' ', '/', 'x'].includes(statusSymbol)) {
+        warnings.push(`Non-standard task status symbol '[${statusMatch[1]}]' found in line: "${line.trim()}". Expected '[ ]', '[/]', or '[x]'.`);
+      }
+    }
+
+    // Check for task priority syntax in table cells
+    const priorityMatch = line.match(/\b(P[0-9]|HIGH|MEDIUM|LOW)\b/i);
+    if (priorityMatch) {
+      const p = priorityMatch[1].toUpperCase();
+      if (!['P0', 'P1', 'P2'].includes(p)) {
+        warnings.push(`Non-standard task priority '${priorityMatch[1]}' found in line: "${line.trim()}". Expected 'P0', 'P1', or 'P2'.`);
+      }
+    }
+  }
+  if (taskCount > 0) {
+    console.log(`📋 Checked ${taskCount} task board item(s) for protocol compliance.`);
+  }
+}
+
+// 3. Count Dev Log Entries
 const logHeaderMatch = content.match(/## (?:开发日志|Development Log|Dev Log)/i);
 let logEntries = [];
 let preLogContent = content;
@@ -81,7 +138,7 @@ if (logHeaderMatch) {
   console.log('ℹ️ No active Dev Log section found in target file (normal for core protocol/template repos).');
 }
 
-// 3. Auto-archive if requested
+// 4. Auto-archive if requested
 if (isArchiveMode && logEntries.length > 10) {
   const keepEntries = logEntries.slice(0, 10);
   const archiveEntries = logEntries.slice(10);
@@ -110,7 +167,7 @@ if (isArchiveMode && logEntries.length > 10) {
   console.log(`✅ Successfully archived ${archiveEntries.length} entries to docs/dev-log-archive.md`);
 }
 
-// 4. Report Validation Results
+// 5. Report Validation Results
 console.log('--------------------------------------------------');
 if (errors.length > 0) {
   console.error('❌ Validation Errors:');
