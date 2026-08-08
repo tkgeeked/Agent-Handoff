@@ -1,4 +1,4 @@
-# CLAUDE.md（入口文件，非看板）
+# AGENTS.md（入口文件，非看板）
 
 > 本项目采用 AgentHandoff 协议。**本文件只是入口，不是看板。**
 

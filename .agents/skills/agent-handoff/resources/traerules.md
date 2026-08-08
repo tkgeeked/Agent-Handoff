@@ -1,4 +1,4 @@
-# Cursor IDE 系统规则 — AgentHandoff 协议接入（入口，非看板）
+# Trae IDE 系统规则 — AgentHandoff 协议接入（入口，非看板）
 
 > 本项目采用 AgentHandoff 协议。**本文件只是入口，不是看板。**
 

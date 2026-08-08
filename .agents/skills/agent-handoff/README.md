@@ -1,4 +1,4 @@
-# 🤖 AgentHandoff — AI Agent 项目接管与进度无缝交接协议
+# 🤖 AgentHandoff — 单一事实来源交接协议
 
 [简体中文](#简体中文) | English
 
@@ -19,7 +19,7 @@ AgentHandoff v3.0.0 fixes this with four core principles:
 | **Versioned backups** | None | Old versions of `handoff.md` / log are backed up to `backup/` before every change (never deleted) |
 | **Unified log** | Log embedded in dashboards | All sessions logged to `docs/handoff-log.md` (archived, never deleted) |
 
-Plus: **smart auto-initialization** (agents autonomously bootstrap `handoff.md` & build commands in new repos) and **smart splitting** (when `handoff.md` grows beyond 200 lines, agents split details into `docs/`). And a **clean-root rule**: only entry files live at root.
+Plus: **smart splitting** — when `handoff.md` grows beyond 200 lines, agents split details (rules / structure / decisions) into `docs/` sub-files and keep only key info + links in the board. And a **clean-root rule**: only entry files live at root; everything else is filed into subdirectories and registered in the board's index.
 
 ---
 
@@ -45,7 +45,7 @@ agent-handoff/
 ├── SKILL.md                   # The protocol (loaded by skills-capable agents)
 ├── README.md                  # This file (human-facing)
 ├── scripts/
-│   └── validate-handoff.mjs   # --init / --check / --archive / --backup
+│   └── validate-handoff.mjs   # --check / --archive / --backup
 ├── references/
 │   ├── handoff_log_format.md  # Log templates: normal, failure, backup/restore/split events
 │   ├── best_practices.md      # Project-specific constraint template
@@ -134,15 +134,15 @@ MIT License.
 
 ## 简体中文
 
-# AgentHandoff — AI Agent 项目接管与进度无缝交接协议
+# AgentHandoff — 单一事实来源交接协议
 
-## 架构与核心原则 (v3.0.0)
+## 架构与核心原则 (v3.1.0)
 
 传统方案为每个平台维护各自的看板文件（`CLAUDE.md` / `README.md` / `.cursorrules` 等），极易产生**看板分裂**：Agent A 更新它的文件、Agent B 更新另一个文件，状态逐渐分叉。
 
-AgentHandoff v3.0.0 采用四条核心原则解决此问题：
+AgentHandoff v3.1.0 采用四条核心原则解决此问题：
 
-| 原则 | 传统多看板模式 | AgentHandoff (v3.0.0) |
+| 原则 | 传统多看板模式 | AgentHandoff (v3.1.0) |
 |:---|:---|:---|
 | **单一事实来源** | 多个看板并存 | **只有 `handoff.md`**，所有 Agent 共用一个看板 |
 | **薄入口** | 平台文件内嵌完整看板 | 平台文件只是路牌（"读 `handoff.md`"），**零项目数据** |
@@ -217,3 +217,4 @@ node scripts/validate-handoff.mjs --backup    # 手动备份看板与日志
 ## 开源协议
 
 MIT License.
+
