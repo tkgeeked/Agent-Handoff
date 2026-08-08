@@ -2,7 +2,7 @@
 name: agent-handoff
 slug: agent-handoff
 displayName: AgentHandoff | AI Agent 项目接管与进度无缝交接协议
-version: 3.0.0
+version: 3.0.1
 author: tkgeeked
 homepage: https://github.com/tkgeeked/agent-handoff
 description: 统一交接看板（handoff.md）+ 智能自主初始化 + 薄入口 + 版本备份 + 智能拆分 + 统一日志。任何 AI Agent（Claude Code、Codex、Antigravity、Trae、Cursor、Windsurf 等）进入全新项目时，若不存在 handoff.md，将自动自主触发初始化并推导项目构建命令，实现真正零人工干预的无缝换 Agent 治理。(Use when starting or completing an agent coding session, auto-initializing handoff state in a project, handing off work between agents, inspecting project task boards, creating session logs, or backing up handoff state.)
