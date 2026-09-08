@@ -4,7 +4,7 @@
 
 只写"如果不特别说明，AI 可能会做错"的内容。
 
-> **放置规则**：小项目直接写在 `handoff.md` 的规范区域；当规范内容膨胀（>40 行）时，按 AgentHandoff v2 协议第 7 节拆分到 `docs/rules.md`，并在 `handoff.md` 保留链接 + 摘要。
+> **放置规则**：小项目直接写在 `handoff.md` 的规范区域；当规范内容膨胀（>40 行）时，按 AgentHandoff v3.0.2 协议第 7 节拆分到 `docs/rules.md`，并在 `handoff.md` 保留链接 + 摘要。
 
 ---
 
@@ -18,8 +18,8 @@
 
 ### 构建与环境约束
 
-- **运行时版本要求**：[e.g., Node >= 20 / Python >= 3.11 / Rust stable]
-- **包管理器**：[e.g., 只用 pnpm，不要用 npm / 只用 uv，不要用 pip]
+- **运行时版本要求**：[e.g., Node >= 20 / Python >= 3.11 / Rust stable / Go >= 1.22]
+- **包管理器**：[e.g., 只用 pnpm，不要用 npm / 只用 uv，不要用 pip / 只用 cargo]
 - **环境变量**：[e.g., 需要 .env.local 文件，包含 API_KEY]
 - **特殊构建步骤**：[e.g., 必须先运行 codegen 再 build]
 

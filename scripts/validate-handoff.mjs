@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * AgentHandoff — Validator, Archiver, Backup & Auto-Init Tool
+ * AgentHandoff v3.0.2 — Validator, Archiver, Backup & Auto-Init Tool
  *
  * 用法:
  *   node scripts/validate-handoff.mjs --init     # 智能自动初始化当前项目（生成 handoff.md、日志与薄入口）
@@ -40,9 +40,10 @@ const ALLOWED_ROOT_MD = new Set([
 const ENTRYPOINT_FILES = [
   'CLAUDE.md', 'AGENTS.md', 'AI.md', 'README.md',
   '.cursorrules', '.windsurfrules', '.traerules',
+  path.join('.github', 'copilot-instructions.md'),
 ];
 
-console.log('🔍 AgentHandoff Validation & Maintenance Tool');
+console.log('🔍 AgentHandoff v3.0.2 Validation & Maintenance Tool');
 console.log('--------------------------------------------------');
 
 // ---------- 0. 智能自主初始化 (--init) ----------
@@ -57,30 +58,68 @@ if (isInitMode) {
   console.log('⚡ 开始智能自动初始化项目交接治理架构...');
   const projectName = path.basename(cwd);
 
-  // 推导构建与测试命令
+  // 推导构建与测试命令（覆盖主流现代包管理器与语言）
   let buildCmd = 'npm run build';
   let testCmd = 'npm test';
   let projectType = 'Node.js / Generic';
 
   if (fs.existsSync(path.join(cwd, 'package.json'))) {
+    let pm = 'npm';
+    if (fs.existsSync(path.join(cwd, 'pnpm-lock.yaml'))) {
+      pm = 'pnpm';
+    } else if (fs.existsSync(path.join(cwd, 'yarn.lock'))) {
+      pm = 'yarn';
+    } else if (fs.existsSync(path.join(cwd, 'bun.lockb')) || fs.existsSync(path.join(cwd, 'bun.lock'))) {
+      pm = 'bun';
+    }
+    projectType = `Node.js (${pm})`;
+    buildCmd = `${pm} run build`;
+    testCmd = `${pm} test`;
+
     try {
       const pkg = JSON.parse(fs.readFileSync(path.join(cwd, 'package.json'), 'utf8'));
-      projectType = 'Node.js (package.json)';
-      if (pkg.scripts?.build) buildCmd = 'npm run build';
-      if (pkg.scripts?.test) testCmd = 'npm test';
+      if (pkg.scripts) {
+        buildCmd = pkg.scripts.build ? (pm === 'npm' ? 'npm run build' : `${pm} build`) : (pm === 'npm' ? 'npm run compile' : `${pm} compile`);
+        testCmd = pkg.scripts.test ? (pm === 'npm' ? 'npm test' : `${pm} test`) : testCmd;
+      }
     } catch {}
+  } else if (fs.existsSync(path.join(cwd, 'uv.lock'))) {
+    projectType = 'Python (uv)';
+    buildCmd = 'uv sync';
+    testCmd = 'uv run pytest';
+  } else if (fs.existsSync(path.join(cwd, 'poetry.lock'))) {
+    projectType = 'Python (poetry)';
+    buildCmd = 'poetry install';
+    testCmd = 'poetry run pytest';
   } else if (fs.existsSync(path.join(cwd, 'pyproject.toml')) || fs.existsSync(path.join(cwd, 'requirements.txt'))) {
-    projectType = 'Python';
+    projectType = 'Python (standard)';
     buildCmd = 'pip install -r requirements.txt';
     testCmd = 'pytest';
   } else if (fs.existsSync(path.join(cwd, 'Cargo.toml'))) {
-    projectType = 'Rust';
+    projectType = 'Rust (cargo)';
     buildCmd = 'cargo build';
     testCmd = 'cargo test';
   } else if (fs.existsSync(path.join(cwd, 'go.mod'))) {
     projectType = 'Go';
     buildCmd = 'go build ./...';
     testCmd = 'go test ./...';
+  } else if (fs.existsSync(path.join(cwd, 'pom.xml'))) {
+    projectType = 'Java (Maven)';
+    buildCmd = 'mvn compile';
+    testCmd = 'mvn test';
+  } else if (fs.existsSync(path.join(cwd, 'build.gradle')) || fs.existsSync(path.join(cwd, 'build.gradle.kts'))) {
+    const hasWrapper = fs.existsSync(path.join(cwd, 'gradlew'));
+    projectType = 'JVM (Gradle)';
+    buildCmd = hasWrapper ? './gradlew build' : 'gradle build';
+    testCmd = hasWrapper ? './gradlew test' : 'gradle test';
+  } else if (fs.existsSync(path.join(cwd, 'CMakeLists.txt'))) {
+    projectType = 'C/C++ (CMake)';
+    buildCmd = 'cmake -B build && cmake --build build';
+    testCmd = 'ctest --test-dir build';
+  } else if (fs.existsSync(path.join(cwd, 'Makefile'))) {
+    projectType = 'Generic (Makefile)';
+    buildCmd = 'make';
+    testCmd = 'make test';
   }
 
   console.log(`📦 检测到项目类型: ${projectType}`);
@@ -91,11 +130,12 @@ if (isInitMode) {
   if (fs.existsSync(handoffTemplatePath)) {
     handoffText = fs.readFileSync(handoffTemplatePath, 'utf8');
   } else {
-    handoffText = `# ${projectName} — 项目交接看板\n\n## 1. 项目简介\n- **目标**：${projectName} 核心项目\n\n## 2. 当前状态\n- **构建命令**：\`${buildCmd}\`\n- **测试命令**：\`${testCmd}\`\n\n## 3. 任务看板\n### 当前目标：初始化项目开发\n\n| 任务 | 优先级 | 状态 | 前置依赖 | 备注 |\n|------|--------|------|----------|------|\n| 完成初始化 | P0 | [x] | 无 | 由 AgentHandoff 智能建置 |\n\n## 4. 文档索引\n- \`docs/handoff-log.md\`: 开发日志\n\n## 5. 用户偏好\n- 语言偏好：中文\n\n## 6. 接手指引\n接手时先跑测试，确认逻辑符合预期。\n`;
+    handoffText = `# ${projectName} — 项目交接看板\n\n## 🎯 项目简介\n- **目标**：${projectName} 核心项目\n\n## 📍 当前状态\n- **构建**：\`${buildCmd}\`\n- **测试**：\`${testCmd}\`\n\n## 🥅 当前目标\n初始化项目开发\n\n## ✅ 任务表\n| 任务 | 优先级 | 状态 | 前置依赖 | 备注 |\n|------|--------|------|----------|------|\n| 完成初始化 | P0 | [x] | 无 | 由 AgentHandoff 智能建置 |\n\n## 📑 文档索引\n| 文件 | 用途 | 说明 |\n|------|------|------|\n| [docs/handoff-log.md](docs/handoff-log.md) | 开发日志 | 所有会话记录 |\n\n## 👤 用户偏好\n- 语言偏好：中文\n\n## 🤖 接手指引\n接手时先跑测试，确认逻辑符合预期。\n`;
   }
 
   // 替换模版中的占位符号
   handoffText = handoffText.replace(/\[一句话描述项目的核心功能与商业\/技术目标\]/g, `${projectName} 核心项目`);
+  handoffText = handoffText.replace(/\[通过 \/ 失败\]/g, `通过 (初始化推导构建: \`${buildCmd}\` / 测试: \`${testCmd}\`)`);
   fs.writeFileSync(handoffPath, handoffText, 'utf8');
   console.log('✅ 已生成根目录唯一交接看板: handoff.md');
 
@@ -107,7 +147,7 @@ if (isInitMode) {
   const logPath = path.join(docsDir, 'handoff-log.md');
   if (!fs.existsSync(logPath)) {
     const today = new Date().toISOString().split('T')[0];
-    const initialLog = `# 开发日志 (Development Log)\n\n### ${today} (项目智能初始化)\n- **执行 Agent**：AgentHandoff Auto-Init\n- **会话目标**：自动建置项目交接治理看板与薄入口。\n- **改动文件清单**：\`handoff.md\`, \`docs/handoff-log.md\`, 薄入口文件\n- **具体改动**：生成单一事实来源看板与项目日志结构。\n- **项目现状**：构建状态（通过 ✅）。\n- **接班任务**：配置项目专属代码规范与用户偏好。\n`;
+    const initialLog = `# 开发日志 (Development Log)\n\n### ${today} (项目智能初始化)\n- **执行 Agent**：AgentHandoff Auto-Init (v3.0.2)\n- **会话目标**：自动建置项目交接治理看板与薄入口。\n- **改动文件清单**：\`handoff.md\`, \`docs/handoff-log.md\`, 薄入口文件\n- **具体改动**：生成单一事实来源看板与项目日志结构，精准推导构建与测试命令。\n- **环境与依赖变更**：无\n- **技术决策**：识别项目为 ${projectType}，初始化治理规范。\n- **破坏性变更/注意事项**：无\n- **项目现状**：构建状态（通过 ✅）。\n- **接班任务**：配置项目专属代码规范与用户偏好。\n`;
     fs.writeFileSync(logPath, initialLog, 'utf8');
     console.log('✅ 已生成开发日志: docs/handoff-log.md');
   }
@@ -119,6 +159,7 @@ if (isInitMode) {
     { file: '.cursorrules', tmpl: 'cursorrules.md' },
     { file: '.windsurfrules', tmpl: 'windsurfrules.md' },
     { file: '.traerules', tmpl: 'traerules.md' },
+    { file: path.join('.github', 'copilot-instructions.md'), tmpl: 'copilot-instructions.md' },
   ];
 
   for (const { file, tmpl } of entrypointMap) {
@@ -126,6 +167,10 @@ if (isInitMode) {
     if (!fs.existsSync(filePath)) {
       const tmplPath = path.join(resourcesDir, tmpl);
       if (fs.existsSync(tmplPath)) {
+        const parentDir = path.dirname(filePath);
+        if (!fs.existsSync(parentDir)) {
+          fs.mkdirSync(parentDir, { recursive: true });
+        }
         fs.copyFileSync(tmplPath, filePath);
         console.log(`✅ 已自动创建平台薄入口: ${file}`);
       }
@@ -133,7 +178,7 @@ if (isInitMode) {
   }
 
   console.log('--------------------------------------------------');
-  console.log('🎉 智能初始化完成！AgentHandoff 治理协议已准备就绪。');
+  console.log('🎉 智能初始化完成！AgentHandoff v3.0.2 治理协议已准备就绪。');
   process.exit(0);
 }
 
@@ -173,17 +218,17 @@ for (const section of requiredSections) {
   }
 }
 
-// 1b. 任务表语法
+// 1b. 任务表语法（支持 [ ] 待办, [/] 进行中, [x] 完成, [!] 阻塞, [~] 取消, [-] 挂起）
 const taskLines = handoffContent.split('\n').filter(line => line.includes('|'));
 if (taskLines.length > 0) {
   let taskCount = 0;
   for (const line of taskLines) {
     if (/^\s*\|(?:\s*:?-+:?\s*\|)+\s*$/.test(line)) continue;
-    const statusMatch = line.match(/\[([ x/!?\-])\]/i);
+    const statusMatch = line.match(/\[([ x/!?~\-])\]/i);
     if (statusMatch) {
       taskCount++;
       const statusSymbol = statusMatch[1].toLowerCase();
-      if (![' ', '/', 'x'].includes(statusSymbol)) {
+      if (![' ', '/', 'x', '!', '~', '-'].includes(statusSymbol)) {
         warnings.push(`非标准任务状态 '[${statusMatch[1]}]'：${line.trim()}`);
       }
     }
@@ -210,7 +255,7 @@ for (const name of ENTRYPOINT_FILES) {
   if (!fs.existsSync(p)) continue;
   const content = fs.readFileSync(p, 'utf8');
   const boardMarkers = [];
-  if (/^\s*\|.*\[[ x/]\]/m.test(content)) boardMarkers.push('任务状态表格');
+  if (/^\s*\|.*\[[ x/!~\-]\]/m.test(content)) boardMarkers.push('任务状态表格');
   if (/(?:^|\n)#+\s*(?:Session Handoff Log|开发日志|Development Log)/i.test(content)) boardMarkers.push('日志章节');
   if (/(?:^|\n)#+\s*(?:Active Task Tracker|任务表|Task Tracker)/i.test(content)) boardMarkers.push('任务表章节');
   if (boardMarkers.length > 0) {

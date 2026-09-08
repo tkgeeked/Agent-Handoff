@@ -1,0 +1,29 @@
+name: AgentHandoff v3 CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Verify Template by Initializing a Test Project
+        run: |
+          mkdir -p /tmp/ah-test && cp resources/handoff.template.md /tmp/ah-test/handoff.md
+          node scripts/validate-handoff.mjs --check --root /tmp/ah-test
+
+      - name: Markdown Lint Check
+        uses: avto-dev/markdown-lint-check@v1
+        with:
+          args: '-c .markdownlint.json'

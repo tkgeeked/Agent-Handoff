@@ -2,17 +2,17 @@
 name: agent-handoff
 slug: agent-handoff
 displayName: AgentHandoff | AI Agent 项目接管与进度无缝交接协议
-version: 3.0.1
+version: 3.0.2
 author: tkgeeked
 homepage: https://github.com/tkgeeked/agent-handoff
-description: 统一交接看板（handoff.md）+ 智能自主初始化 + 薄入口 + 版本备份 + 智能拆分 + 统一日志。任何 AI Agent（Claude Code、Codex、Antigravity、Trae、Cursor、Windsurf 等）进入全新项目时，若不存在 handoff.md，将自动自主触发初始化并推导项目构建命令，实现真正零人工干预的无缝换 Agent 治理。(Use when starting or completing an agent coding session, auto-initializing handoff state in a project, handing off work between agents, inspecting project task boards, creating session logs, or backing up handoff state.)
+description: 统一交接看板（handoff.md）+ 智能多技术栈自主初始化 + 薄入口 + 版本备份 + 智能拆分 + 统一日志 + 任务阻塞与取消状态管理 + 中断接管自愈。任何 AI Agent（Claude Code、Codex、Antigravity、Trae、Cursor、Windsurf、GitHub Copilot 等）进入全新项目时，若不存在 handoff.md，将自动自主触发初始化并推导项目构建命令，实现真正零人工干预的无缝换 Agent 治理。(Use when starting or completing an agent coding session, auto-initializing handoff state in a project, handing off work between agents, inspecting project task boards, creating session logs, or backing up handoff state.)
 ---
 
 # AgentHandoff | AI Agent 项目接管与进度无缝交接协议
 
 > [!IMPORTANT]
 > **项目根目录的 `handoff.md` 是唯一交接看板（单一事实来源）。**
-> 所有 AI Agent 只能读写它和 `docs/handoff-log.md`；**禁止**在平台入口文件（`CLAUDE.md`、`AGENTS.md`、`.cursorrules`、`.windsurfrules`、`.traerules` 等）中记录任何项目进度、规范或日志。
+> 所有 AI Agent 只能读写它和 `docs/handoff-log.md`；**禁止**在平台入口文件（`CLAUDE.md`、`AGENTS.md`、`.cursorrules`、`.windsurfrules`、`.traerules`、`.github/copilot-instructions.md` 等）中记录任何项目进度、规范或日志。
 
 ## 0. 入口文件（薄入口，只做导向）
 
@@ -23,6 +23,7 @@ description: 统一交接看板（handoff.md）+ 智能自主初始化 + 薄入�
 - Cursor → `.cursorrules`
 - Windsurf → `.windsurfrules`
 - Trae → `.traerules`
+- GitHub Copilot → `.github/copilot-instructions.md`
 - 其他 Agent → `README.md` 的 `AI Agent Entrypoint` 段落
 
 ## 1. 接管协议（每次会话开始时执行，按顺序不可跳过）
@@ -30,12 +31,20 @@ description: 统一交接看板（handoff.md）+ 智能自主初始化 + 薄入�
 0. **智能自主初始化（全新项目自动触发）**：
    - 检查根目录是否存在 `handoff.md`。若不存在，Agent **无需等待人类命令，自主执行初始化**：
      a. 从本 Skill 的 `resources/handoff.template.md` 复制并在根目录创建 `handoff.md`。
-     b. 扫描项目特征（`package.json` / `pyproject.toml` / `Cargo.toml` / `go.mod` 等），自动识别项目名称与默认构建/测试命令，填入 `handoff.md`。
-     c. 根据当前运行平台自动创建对应薄入口文件（Claude Code 创建 `CLAUDE.md`，Cursor 创建 `.cursorrules`，Codex/Antigravity 创建 `AGENTS.md`，Trae 创建 `.traerules`，Windsurf 创建 `.windsurfrules`）。
-     d. 创建 `docs/handoff-log.md` 并写入首条初始化日志（`### YYYY-MM-DD (项目初始化)`），随后继续执行步骤 1。
+     b. **精准推导构建与测试命令**：
+        - Node.js：优先按 lockfile 区分（`pnpm-lock.yaml` → `pnpm run build` / `pnpm test`；`bun.lockb` / `bun.lock` → `bun run build` / `bun test`；`yarn.lock` → `yarn build` / `yarn test`；否则使用 `npm`）；
+        - Python：检查 `uv.lock` → `uv sync && uv run pytest`；`poetry.lock` → `poetry run pytest`；`pyproject.toml` / `requirements.txt` → `pip install -r requirements.txt && pytest`；
+        - Rust：`Cargo.toml` → `cargo build` / `cargo test`；
+        - Go：`go.mod` → `go build ./...` / `go test ./...`；
+        - Java/Kotlin：`pom.xml` → `mvn compile` / `mvn test`；`build.gradle` → `./gradlew build` / `./gradlew test`；
+        - C/C++/通用：`CMakeLists.txt` → `cmake -B build && cmake --build build`；`Makefile` → `make` / `make test`。
+     c. 根据当前环境部署薄入口文件（`CLAUDE.md`、`.cursorrules`、`AGENTS.md`、`.traerules`、`.windsurfrules`、`.github/copilot-instructions.md`）。
+     d. 创建 `docs/handoff-log.md` 并写入首条初始化日志（`### YYYY-MM-DD HH:mm (项目智能初始化)`），随后继续执行步骤 1。
 1. **读取看板**：读取根目录 `handoff.md`（这是项目唯一索引，**禁止 `find` 全树扫描**，按需打开索引中引用的文件）。
 2. **验证实际状态**：执行项目的构建和测试命令，确认实际状态与看板一致。若不一致，以实际代码为准并更新看板。
-3. **读取日志**：查看 `docs/handoff-log.md` 最近 3-5 条记录，重点关注"接班任务"和"已知问题"。
+3. **读取日志与评估遗留任务**：
+   - 查看 `docs/handoff-log.md` 最近 3-5 条记录，重点关注"接班任务"和"已知问题"。
+   - **中断任务接管**：若发现看板上有前一个 Agent 遗留的正在进行状态（`[/]`），结合 git status 和测试验证其进度。若前任会话异常中断，当前 Agent 应当场接管，并在日志中记录接管事件。
 4. **声明会话范围**：明确本次会话计划完成哪些任务。若范围过大，裁剪并记录。
 
 ## 2. 目录整洁规范
@@ -47,16 +56,22 @@ description: 统一交接看板（handoff.md）+ 智能自主初始化 + 薄入�
 
 ## 3. 开发中维护
 
-- 任务状态变化时 → 实时更新（`[ ]` → `[/]` → `[x]`）。
+- 任务状态变化时 → 实时更新：
+  - `[ ]`：待办 (Todo)
+  - `[/]`：进行中 (In Progress，必须标注执行者与开始时间)
+  - `[x]`：已完成 (Done)
+  - `[!]`：阻塞/挂起 (Blocked，说明阻塞原因，如等待依赖或权限)
+  - `[~]`：已取消/废弃 (Cancelled，说明废弃原因，保留上下文)
 - 文件/目录增删、移动或重构时 → 立即同步 `handoff.md` 的「文档索引」区（引用同步，防止失效链接）。
 - 做出重要技术决策时 → 同步更新「重要决策」区域（未拆分时在看板内，已拆分时写入 `docs/decisions.md`）。
 
 ## 4. 会话交接协议（每次会话结束前执行，按顺序不可跳过）
 
-1. **先备份旧版**：在修改 `handoff.md` / `docs/handoff-log.md` **之前**，将当前（旧）版本复制到 `backup/handoff/` 与 `backup/log/`（命名带时间戳，见第 5 节）。备份动作本身追加一条日志。
+1. **先备份旧版**：在修改 `handoff.md` / `docs/handoff-log.md` **之前**，将当前（旧）版本复制到 `backup/handoff/` 与 `backup/log/`（命名带时间戳，见第 5 节）。
+   > **自愈兼容提示**：若环境安装了 Node.js 且有脚本，可直接运行 `node scripts/validate-handoff.mjs --backup`；若无 Node.js，Agent **自主执行纯文件复制**完成备份，流程决不中断。
 2. **验证代码**：确保代码能编译、测试通过。若无法修复，按失败模板记录（见 `references/handoff_log_format.md`）。
 3. **更新看板**：更新 `handoff.md` 任务表与当前状态。
-4. **追加日志**：向 `docs/handoff-log.md` 追加一条交接记录（格式见 `references/handoff_log_format.md`，必须包含本次会话改动文件清单）。
+4. **追加日志**：向 `docs/handoff-log.md` 追加一条交接记录（格式见 `references/handoff_log_format.md`，必须包含本次会话改动文件清单、环境/依赖变更以及破坏性变更提醒）。
 5. **提交代码**：若涉及 git，使用 conventional commits（`feat:` / `fix:` / `docs:` 等）。未完成的半成品使用 WIP commit 并注明。
 6. **总结**：向用户简要总结本次交接要点。
 
@@ -72,7 +87,7 @@ description: 统一交接看板（handoff.md）+ 智能自主初始化 + 薄入�
 
 - **唯一日志文件**：`docs/handoff-log.md`，逆序排列（最新在上），方便快速回看。
 - 看板/日志中最多保留最近 10 条日志；超出时，将**最早**的记录移入 `docs/handoff-log-archive.md`（追加到末尾，保持时间顺序，永不删除）。
-- 归档操作可用 `node scripts/validate-handoff.mjs --archive` 自动完成。
+- 归档操作可用 `node scripts/validate-handoff.mjs --archive` 自动完成，无 Node 环境由 Agent 纯文本剪切归档。
 - 「重要决策记录」区域**永不归档**，永久保留。
 
 ## 7. 智能拆分（长期项目防冗长）
@@ -97,13 +112,20 @@ description: 统一交接看板（handoff.md）+ 智能自主初始化 + 薄入�
 
 | 任务 | 优先级 | 状态 | 前置依赖 | 备注 |
 |------|--------|------|----------|------|
-| 任务描述 | P0/P1/P2 | [ ] [/] [x] | 依赖哪个任务 | 补充说明 |
+| 任务描述 | P0/P1/P2 | [ ] [/] [x] [!] [~] | 依赖哪个任务 | 补充说明（如执行者/阻塞原因） |
 ```
 
-优先级定义：
-- **P0**：阻塞性问题，必须立即处理
-- **P1**：重要，本次或下次会话应完成
-- **P2**：普通，可排期
+状态与优先级定义：
+- **状态符号**：
+  - `[ ]`：待办 (Todo)
+  - `[/]`：进行中 (In Progress，须注明 Agent 名称)
+  - `[x]`：已完成 (Done)
+  - `[!]`：阻塞/挂起 (Blocked，须注明依赖或阻塞原因)
+  - `[~]`：已取消/废弃 (Cancelled，保留上下文)
+- **优先级**：
+  - **P0**：阻塞性问题，必须立即处理
+  - **P1**：重要，本次或下次会话应完成
+  - **P2**：普通，可排期
 
 ## 9. 用户偏好（由用户填写，所有 Agent 遵守）
 
@@ -115,10 +137,10 @@ description: 统一交接看板（handoff.md）+ 智能自主初始化 + 薄入�
 
 此区域内容由用户定义，Agent **只读取、不擅自修改**。
 
-## 10. 并行协作注意事项
+## 10. 并行协作与中断自愈协议
 
-- 若发现看板中有其他 Agent 正在进行的任务（标记为 `[/]` 且注明了执行者），不要修改该任务涉及的文件。
-- 若必须修改同一文件，在日志中明确标注潜在冲突点。
+- **并发保护**：若发现看板中有其他 Agent 正在进行的任务（标记为 `[/]` 且近期由其他 Agent 执行），不要修改该任务涉及的文件。若必须修改同一文件，在日志中明确标注潜在冲突点。
+- **中断接管**：若发现处于 `[/]` 的任务属于上一轮因异常崩溃、中断而遗留的半成品，当前 Agent 在检查 Git 状态与测试后接管任务，并补齐交接日志。
 - 大型项目建议按模块拆分任务，减少并行冲突。
 
 ## 11. 机械化校验与辅助工具
@@ -126,7 +148,7 @@ description: 统一交接看板（handoff.md）+ 智能自主初始化 + 薄入�
 项目提供了轻量级校验、自动归档与手动备份工具：
 
 ```bash
-# 智能自动初始化当前项目
+# 智能自动初始化当前项目（支持全技术栈推导）
 node scripts/validate-handoff.mjs --init
 
 # 校验 handoff.md 结构、多看板检测、引用完整性、根目录整洁度、备份存在性
