@@ -24,6 +24,4 @@ jobs:
           node scripts/validate-handoff.mjs --check --root /tmp/ah-test
 
       - name: Markdown Lint Check
-        uses: avto-dev/markdown-lint-check@v1
-        with:
-          args: '-c .markdownlint.json'
+        run: npx markdownlint-cli '**/*.md' -c .markdownlint.json --ignore .scratch --ignore node_modules --ignore .agents
